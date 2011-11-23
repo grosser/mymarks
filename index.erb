@@ -6,7 +6,17 @@
       <input type="submit" value="Get My Bookmarks!"/>
     </form>
   </html>
-<% else %>
-
-
+<% else
+  require 'mechanize'
+  
+  agent = Mechanize.new
+  page = agent.get('https://login.xmarks.com/')
+  form = page.form()
+  form.username = params['username']
+  form.password = params['password']
+  result = agent.submit(form)
+%>  
+  <%= params.inspect %>
+  <%= result.uri %>
+  <%= result.body %>
 <% end %>
