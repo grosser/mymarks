@@ -11,11 +11,13 @@ error do
   'Application error'
 end
 
+set :views, 'views'
+
 get "/bookmarks" do
   @bookmarks = MyMarks::Parser.get_html(params[:username], params[:password])
-  render @bookmarks.to_json
+  @bookmarks.to_json
 end
 
 get '/' do
-  render 'views/index.erb'
+  erb :index
 end

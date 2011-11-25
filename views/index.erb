@@ -1,19 +1,57 @@
 <html>
-  <head>
-    <title>MyMarks</title>
-    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.css" />
-    <script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
-    <script src="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.js"></script>
-  </head>
+<head>
+  <title>MyMarks</title>
+  <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.css" />
+  <script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
+  <script src="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.js"></script>
+  <script>
+    var MM = {
+      bookmarks: {},
+      parseBookmarks: function(data){
+        var Foxmarks = {BookmarkManager: {}}
+        eval(eval(data));
+        MM.bookmarks = Foxmarks.BookmarkManager.bookmarks;
+      }
+    };
 
-  <form method="post" id="login">
-    <input type="text" name="username" placeholder="xmarks username"/>
-    <input type="password" name="password" placeholder="xmarks password"/>
-    <input type="submit" value="Get My Bookmarks!"/>
-  </form>
+    $(function(){
+      $('#login').submit(function(){
+        var url = '/bookmarks?' + $(this).serialize();
+        $.get(url).success(function(data){
+          MM.parseBookmarks(data)
+          $.mobile.changePage('#bookmarks');
+        }).error(function(){
+          alert("Error downloading bookmarks. Username/password wrong?")
+        });
+        return false;
+      });
+    })
+  </script>
+</head>
+
+<body>
+<div data-role="page" id="index">
+  <div data-role="header">
+    <h1>MyMarks</h1>
+  </div>
+  <div data-role="content">
+    Load your bookmarks by entering your XMarks username/password.
+    <form method="post" id="login">
+      <input type="text" name="username" placeholder="xmarks username"/>
+      <input type="password" name="password" placeholder="xmarks password"/>
+      <input type="submit" value="Get My Bookmarks!"/>
+    </form>
+  </div>
+</div>
+
+<div data-role="page" id="bookmarks">
+  <div data-role="header">
+    <h1>MyMarks</h1>
+  </div>
+  <div data-role="content">
+    Bla
+  </div>
+</div>
+
+</body>
 </html>
-
-
-<script>
-  $('')
-</script>

@@ -3,7 +3,6 @@ require 'bundler'
 Bundler.setup
 Bundler.require
 
-require 'mechanize'
 require 'digest/md5'
 require 'logger'
 $LOAD_PATH << './lib'

@@ -26,6 +26,8 @@ GEM
     rspec-expectations (2.7.0)
       diff-lcs (~> 1.1.2)
     rspec-mocks (2.7.0)
+    shotgun (0.9)
+      rack (>= 1.0)
     sinatra (1.0)
       rack (>= 1.0)
     unf (0.0.3)
@@ -41,4 +43,5 @@ DEPENDENCIES
   mechanize (= 2.1.pre.1)
   rack-test
   rspec
+  shotgun
   sinatra
