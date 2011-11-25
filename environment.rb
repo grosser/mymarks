@@ -5,6 +5,7 @@ Bundler.require
 
 require 'mechanize'
 require 'digest/md5'
+require 'logger'
 $LOAD_PATH << './lib'
 require 'mymarks/parser'
 

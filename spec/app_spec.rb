@@ -11,8 +11,14 @@ describe 'App' do
     Sinatra::Application.new
   end
 
-  it "returns error when hash does not match" do
-    post "bookmarks", 'username' => 'mymarks_test', 'password' => 'mymarks_test_pw'
-    last_response.body.should == 'xxx'
+  it "gets /" do
+    get '/'
+    last_response.body.should include('<form')
+  end
+
+  it "gets /bookmarks" do
+    MyMarks::Parser.should_receive(:get_html).with('X','Y').and_return 'XXX'
+    get '/bookmarks?username=X&password=Y'
+    last_response.body.should == 'XXX'
   end
 end
