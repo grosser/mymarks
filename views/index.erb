@@ -4,124 +4,12 @@
   <link rel="stylesheet" href="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.css" />
   <script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
   <script src="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.js"></script>
-  <script src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/0.5.3/backbone-min.js"></script>
   <script src="/javascripts/jquery.url.js"></script>
+  <script src="/javascripts/page.js"></script>
   <script>
-    var MM = {
-      bookmarks: false,
-      back: false, // back button
-
-      login: function(){
-        var url = '/bookmarks?' + $(this).serialize();
-        $.get(url).success(function(data){
-          MM.parseBookmarks(data)
-          $.mobile.changePage('#bookmarks');
-          MM.displayBookmarks(MM.bookmarks);
-        }).error(function(){
-          alert("Error downloading bookmarks. Username/password wrong?")
-        });
-        return false;
-      },
-
-      redirectToHomeOnEmptyBookmarks: function(){
-        if(!MM.bookmarks){
-          $.mobile.changePage('#index');
-        }
-      },
-
-      parseBookmarks: function(data){
-        var Foxmarks = {BookmarkManager: {}}
-        eval(eval(data));
-        MM.bookmarks = Foxmarks.BookmarkManager.bookmarks;
-      },
-
-      displayableBookmarks: function(bookmarks){
-        return $.grep(bookmarks, function(e){
-          return !(e.href || '').match(/^place:/)
-        })
-      },
-
-      displayBookmarks: function(bookmarks){
-        var $list = $('#bookmark_list');
-        $list.empty();
-        var bookmarks = MM.displayableBookmarks(bookmarks)
-        $.each(bookmarks, function(i,node){
-          var li = $('<li>')
-          li.append(MM.buildBookmark(node))
-          $list.append(li)
-          $list.listview("refresh");
-        })
-      },
-
-      buildBookmark: function(node){
-        var a = $('<a>')
-        a.text(node.text)
-        a.attr('data-transition', 'slide')
-        a.attr('data-type', node.leaf ? 'link' : 'folder')
-        a[0].mm_node = node
-
-        if(node.leaf){
-          // simple link
-          a.attr('href', node.href)
-        } else {
-          // folder
-          a.click(function(){
-            MM.displayBookmarks(node.children)
-            return false;
-          })
-        }
-
-        a.click(MM.onBookmarkClick)
-        image = MM.buildImage(node)
-        a.prepend(image)
-
-        return a;
-      },
-
-      // build link or folder icon
-      buildImage: function(node){
-        var $image = $('<img>')
-        if(node.leaf){
-          $image.attr('src', '/images/document.png')
-          MM.preloadFavicon($image, node.href)
-        } else {
-          $image.attr('src', '/images/folder.png')
-        }
-        return $image
-      },
-
-      // create a preloaded image, that replaces the other when loaded
-      preloadFavicon: function($image, url){
-        var favicon = $.url(url).attr('base') + '/favicon.ico'
-        var pre_loader = $('<img>').attr('src', favicon)
-        pre_loader.load(function(){
-          $image.attr('src', favicon)
-        })
-      },
-
-      onBookmarkClick: function(){
-        var $a = $(this)
-        if($a.attr('data-type') == 'folder'){
-          MM.back.find('.ui-btn-text').text($a.text())
-          MM.back[0].mm_node = this.mm_node;
-        }
-      },
-
-      onBackClick: function(){
-        console.log(this.mm_node)
-        MM.displayBookmarks(this.mm_node)
-      }
-    };
-
-    // Page load
     $(function(){
-      MM.redirectToHomeOnEmptyBookmarks()
-
-      $('#login').submit(MM.login);
-
-      MM.back = $('#back_button')
-      MM.back.click(MM.onBackClick)
-    })
+      new MM.page($('body'));
+    });
   </script>
 </head>
 

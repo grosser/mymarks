@@ -19,7 +19,7 @@ CACHE = {}
 get "/bookmarks" do
   key = [params[:username], params[:password]]
   @bookmarks = CACHE[key] ||= MyMarks::Parser.get_html(params[:username], params[:password])
-  @bookmarks.to_json
+  @bookmarks.force_encoding('utf-8').to_json
 end
 
 get '/' do
