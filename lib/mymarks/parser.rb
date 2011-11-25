@@ -1,3 +1,5 @@
+require 'mechanize'
+
 module MyMarks
   module Parser
     def self.get_html(username, password)

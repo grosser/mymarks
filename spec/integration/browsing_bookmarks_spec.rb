@@ -5,6 +5,10 @@ describe "browsing bookmarks", :js => true do
     page.find(css).click
   end
 
+  before do
+    MyMarks::Parser.stub!(:get_html).and_return File.read('spec/fixtures/bookmarks.txt')
+  end
+
   it "loads my bookmarks" do
     visit "/"
     page.should have_content('MyMarks')

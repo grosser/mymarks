@@ -1,0 +1,9 @@
+
+(function() {
+    var FBM = Foxmarks.BookmarkManager;
+    FBM.genTime = 0.624347925186;
+    FBM.itemCount = 5;
+    FBM.bookmarks = [{"feedurl": "", "istb": "", "leaf": true, "tags": "", "text": "Google", "lm": 1322183130, "keyw": "", "mshref": "", "children": [], "lv": "", "href": "http://google.com", "cr": 1322183116, "desc": "", "id": "fbm:n#1322183101037", "cls": "file"}, {"feedurl": "", "istb": "", "tags": "", "text": "F1", "lm": 1322251270, "keyw": "", "mshref": "", "children": [{"feedurl": "", "istb": "", "leaf": true, "tags": "", "text": "Yahoo", "lm": 1322251270, "keyw": "", "mshref": "", "children": [], "lv": "", "href": "http://yahoo.com", "cr": 1322251258, "desc": "", "id": "fbm:n#1322251224361", "cls": "file"}], "lv": "", "href": "", "cr": 1322251249, "desc": "", "id": "fbm:n#1322251224360", "cls": "folder"}, {"feedurl": "", "istb": "", "leaf": true, "tags": "", "text": "Firefox", "lm": 1322251295, "keyw": "", "mshref": "", "children": [], "lv": "", "href": "place:foooo", "cr": 1322251285, "desc": "", "id": "fbm:n#1322251224362", "cls": "file"}];
+    FBM.revision = 15;
+    FBM.username = 'mymarks_test';
+})();
