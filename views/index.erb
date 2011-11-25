@@ -11,6 +11,33 @@
         var Foxmarks = {BookmarkManager: {}}
         eval(eval(data));
         MM.bookmarks = Foxmarks.BookmarkManager.bookmarks;
+      },
+
+      displayBookmarks: function(bookmarks){
+        var $list = $('#bookmark_list');
+        $list.empty();
+        $.each(bookmarks, function(i,node){
+          var li = $('<li>')
+          li.append(MM.buildBookmark(node))
+          $list.append(li)
+          $list.listview("refresh");
+        })
+      },
+
+      buildBookmark: function(node){
+        var a = $('<a>')
+        a.text(node.text)
+        if(node.leaf){
+          // simple link
+          a.attr('href', node.href)
+        } else {
+          // folder
+          a.click(function(){
+            MM.displayBookmarks(node.children)
+            return false;
+          })
+        }
+        return a;
       }
     };
 
@@ -20,6 +47,7 @@
         $.get(url).success(function(data){
           MM.parseBookmarks(data)
           $.mobile.changePage('#bookmarks');
+          MM.displayBookmarks(MM.bookmarks);
         }).error(function(){
           alert("Error downloading bookmarks. Username/password wrong?")
         });
@@ -46,10 +74,12 @@
 
 <div data-role="page" id="bookmarks">
   <div data-role="header">
+    <a href="#index" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>
     <h1>MyMarks</h1>
   </div>
   <div data-role="content">
-    Bla
+    <ul data-role="listview" id="bookmark_list">
+    </ul>
   </div>
 </div>
 
