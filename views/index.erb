@@ -8,6 +8,19 @@
   <script>
     var MM = {
       bookmarks: false,
+      back: false, // back button
+
+      login: function(){
+        var url = '/bookmarks?' + $(this).serialize();
+        $.get(url).success(function(data){
+          MM.parseBookmarks(data)
+          $.mobile.changePage('#bookmarks');
+          MM.displayBookmarks(MM.bookmarks);
+        }).error(function(){
+          alert("Error downloading bookmarks. Username/password wrong?")
+        });
+        return false;
+      },
 
       redirectToHomeOnEmptyBookmarks: function(){
         if(!MM.bookmarks){
@@ -42,6 +55,10 @@
       buildBookmark: function(node){
         var a = $('<a>')
         a.text(node.text)
+        a.attr('data-transition', 'slide')
+        a.attr('data-type', node.leaf ? 'link' : 'folder')
+        a[0].mm_node = node
+
         if(node.leaf){
           // simple link
           a.attr('href', node.href)
@@ -53,6 +70,7 @@
           })
         }
 
+        a.click(MM.onBookmarkClick)
         image = MM.buildImage(node)
         a.prepend(image)
 
@@ -78,6 +96,19 @@
         pre_loader.load(function(){
           $image.attr('src', favicon)
         })
+      },
+
+      onBookmarkClick: function(){
+        var $a = $(this)
+        if($a.attr('data-type') == 'folder'){
+          MM.back.find('.ui-btn-text').text($a.text())
+          MM.back[0].mm_node = this.mm_node;
+        }
+      },
+
+      onBackClick: function(){
+        console.log(this.mm_node)
+        MM.displayBookmarks(this.mm_node)
       }
     };
 
@@ -85,17 +116,10 @@
     $(function(){
       MM.redirectToHomeOnEmptyBookmarks()
 
-      $('#login').submit(function(){
-        var url = '/bookmarks?' + $(this).serialize();
-        $.get(url).success(function(data){
-          MM.parseBookmarks(data)
-          $.mobile.changePage('#bookmarks');
-          MM.displayBookmarks(MM.bookmarks);
-        }).error(function(){
-          alert("Error downloading bookmarks. Username/password wrong?")
-        });
-        return false;
-      });
+      $('#login').submit(MM.login);
+
+      MM.back = $('#back_button')
+      MM.back.click(MM.onBackClick)
     })
   </script>
 </head>
@@ -117,7 +141,7 @@
 
 <div data-role="page" id="bookmarks">
   <div data-role="header">
-    <a href="#index" data-icon="home" data-iconpos="notext" data-direction="reverse" class="ui-btn-left jqm-home">Home</a>
+    <a id="back_button" href="#index" class='ui-btn-left ui-btn-back' data-icon='arrow-l' data-transition="slide">Login</a>
     <h1>MyMarks</h1>
   </div>
   <div data-role="content">

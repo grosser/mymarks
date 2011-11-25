@@ -12,9 +12,13 @@ error do
 end
 
 set :views, 'views'
+set :public, 'public' # shotgun serves them but rackup does not ...
+
+CACHE = {}
 
 get "/bookmarks" do
-  @bookmarks = MyMarks::Parser.get_html(params[:username], params[:password])
+  key = [params[:username], params[:password]]
+  @bookmarks = CACHE[key] ||= MyMarks::Parser.get_html(params[:username], params[:password])
   @bookmarks.to_json
 end
 
