@@ -1,9 +1,5 @@
 require 'spec_helper'
 
-require 'sinatra'
-require 'rack/test'
-require 'app'
-
 describe 'App' do
   include Rack::Test::Methods
 

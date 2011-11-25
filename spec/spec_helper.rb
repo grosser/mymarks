@@ -1,6 +1,7 @@
 $LOAD_PATH << File.dirname(File.dirname(__FILE__))
-require 'environment'
+require 'app'
 
+require 'rack/test'
 require 'capybara'
 require 'capybara/dsl'
 
