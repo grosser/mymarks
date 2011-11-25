@@ -8,13 +8,17 @@
   </html>
 <% else
   require 'mechanize'
+  require 'digest/md5'
   
   agent = Mechanize.new
-  page = agent.get('https://login.xmarks.com/')
-  form = page.form()
+  page = agent.get 'https://login.xmarks.com/'
+  
+  form = page.form
   form.username = params['username']
   form.password = params['password']
-  result = agent.submit(form)
+  form.passwordhash = Digest::MD5.hexdigest(params['password'])
+  
+  result = agent.submit form
 %>  
   <%= params.inspect %>
   <%= result.uri %>
