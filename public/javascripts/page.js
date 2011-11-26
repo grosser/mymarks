@@ -4,6 +4,13 @@ MM.page = function($base){
   var breadcrumb = [];
   var back = $base.find('#back_button');
 
+  function initialize(){
+    redirectToHomeOnEmptyBookmarks();
+    $(window).hashchange(hashChanged);
+    $base.find('#login').submit(login);
+    back.click(onBackClick);
+  }
+
   function login(){
     var url = '/bookmarks?' + $(this).serialize();
     $.get(url).success(function(data){
@@ -139,9 +146,5 @@ MM.page = function($base){
     return node.id.replace(/[^a-z\d+]/g,'');
   }
 
-  redirectToHomeOnEmptyBookmarks();
-
-  $(window).hashchange(hashChanged);
-  $base.find('#login').submit(login);
-  back.click(onBackClick);
+  initialize();
 }
