@@ -78,7 +78,6 @@ MM.page = function($base){
       var src = '/images/folder.png';
     }
     $el.css('background-image', 'url('+src+')');
-    console.log($el)
   }
 
   // create a preloaded image, that replaces the other when loaded
