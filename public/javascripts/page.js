@@ -137,7 +137,7 @@ MM.page = function($base){
   }
 
   function cleanId(node){
-    return node.id.match(/\d+/)[0]
+    return node.id.replace(/[^a-z\d+]/g,'');
   }
 
   redirectToHomeOnEmptyBookmarks();

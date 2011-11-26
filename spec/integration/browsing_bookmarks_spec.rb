@@ -96,13 +96,13 @@ describe "browsing bookmarks", :js => true do
 
     it "shows breadcrumb in url, so I can use my browser back button" do
       click_first_folder
-      current_path_info.should == '/#bookmarks-1322251224360'
+      current_path_info.should == '/#bookmarks-fbmn1322251224360'
       click_back
       current_path_info.should == '/#bookmarks'
     end
 
     it "lets me use my browser history" do
-      visit "/#bookmarks-1322251224360"
+      visit "/#bookmarks-fbmn1322251224360"
       assert_back_button_is 'All'
       assert_content 'Yahoo'
 
