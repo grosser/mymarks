@@ -15,6 +15,7 @@ module MyMarks
 
       # get data
       js_response = agent.get "https://my.xmarks.com/bookmarks/syncd_read"
+      return if js_response.body.strip =~ /^<html/
       js_response.body
     end
   end

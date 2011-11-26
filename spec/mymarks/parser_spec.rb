@@ -6,5 +6,10 @@ describe MyMarks::Parser do
       html = MyMarks::Parser.get_html('mymarks_test', 'mymarks_test_pw')
       html.should include('http://google.com')
     end
+
+    it "fails with wrong username/password" do
+      html = MyMarks::Parser.get_html('mymarks_test', 'mymarks_test')
+      html.should == nil
+    end
   end
 end

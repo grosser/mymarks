@@ -17,4 +17,11 @@ describe 'App' do
     get '/bookmarks?username=X&password=Y'
     last_response.body.should == '"XXX"'
   end
+
+  it "is unauthorized when bookmarks could not be loaded" do
+    MyMarks::Parser.should_receive(:get_html).and_return nil
+    get '/bookmarks?username=X&password=Z'
+    last_response.body.should == 'Authorisation failed'
+    last_response.status.should == 403
+  end
 end

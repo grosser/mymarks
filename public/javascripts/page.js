@@ -13,13 +13,18 @@ MM.page = function($base){
 
   function login(){
     var url = '/bookmarks?' + $(this).serialize();
-    $.get(url).success(function(data){
-      root = parseBookmarks(data);
-      breadcrumb = [root];
-      $.mobile.changePage('#bookmarks');
-    }).error(function(){
-      alert("Error downloading bookmarks. Username/password wrong?")
-    });
+    $.mobile.showPageLoadingMsg();
+    $.ajax({url: url, timeout: 10000})
+      .success(function(data){
+        root = parseBookmarks(data);
+        breadcrumb = [root];
+        $.mobile.hidePageLoadingMsg();
+        $.mobile.changePage('#bookmarks');
+      })
+      .error(function(){
+        alert("Error downloading bookmarks. Username/password wrong?")
+        $.mobile.hidePageLoadingMsg();
+      });
     return false;
   }
 

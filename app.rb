@@ -19,7 +19,11 @@ CACHE = {}
 get "/bookmarks" do
   key = [params[:username], params[:password]]
   @bookmarks = CACHE[key] ||= MyMarks::Parser.get_html(params[:username], params[:password])
-  @bookmarks.force_encoding('utf-8').to_json
+  if @bookmarks
+    @bookmarks.force_encoding('utf-8').to_json
+  else
+    error 403, "Authorisation failed"
+  end
 end
 
 get '/' do
