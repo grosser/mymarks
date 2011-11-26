@@ -1,15 +1,14 @@
 MM = {}
 MM.page = function($base){
-  this.root = false;
-  this.breadcrumb = [];
+  var root = false;
+  var breadcrumb = [];
   var back = $base.find('#back_button');
-  var self = this;
 
   function login(){
     var url = '/bookmarks?' + $(this).serialize();
     $.get(url).success(function(data){
-      self.root = parseBookmarks(data);
-      self.breadcrumb = [self.root];
+      root = parseBookmarks(data);
+      breadcrumb = [root];
       $.mobile.changePage('#bookmarks');
     }).error(function(){
       alert("Error downloading bookmarks. Username/password wrong?")
@@ -86,48 +85,48 @@ MM.page = function($base){
     var node = this.mm_node;
     if(node.leaf) return; // normal link
 
-    self.breadcrumb.push(node)
+    breadcrumb.push(node)
     updateHash();
 
     return false;
   }
 
   function onBackClick(){
-    if(self.breadcrumb.length == 1){
+    if(breadcrumb.length == 1){
       $.mobile.changePage('#index'); // logout
     } else {
-      self.breadcrumb.pop();
+      breadcrumb.pop();
       updateHash();
     }
     return false;
   }
 
   function updateBackButtonText(){
-    if(self.breadcrumb.length == 1){
+    if(breadcrumb.length == 1){
       var text = 'Logout'
     } else {
-      var text = self.breadcrumb[self.breadcrumb.length-2].text;
+      var text = breadcrumb[breadcrumb.length-2].text;
     }
     back.find('.ui-btn-text').text(text);
   }
 
   // [All, x, y] -> #bookmarks-x-y
   function updateHash(){
-    var ids = $.map(self.breadcrumb.slice(1), cleanId);
+    var ids = $.map(breadcrumb.slice(1), cleanId);
     ids.unshift("bookmarks");
     window.location.hash = "#" + ids.join('-');
   }
 
   function hashChanged(){
-    if(!self.root) return;
+    if(!root) return;
     var ids = window.location.hash.split('-');
     if(ids.shift() != '#bookmarks') return;
-    self.breadcrumb = matchedNodesByIds(ids);
-    displayBookmarks(self.breadcrumb.last());
+    breadcrumb = matchedNodesByIds(ids);
+    displayBookmarks(breadcrumb.last());
   }
 
   function matchedNodesByIds(ids){
-    var matchedNodes = [self.root];
+    var matchedNodes = [root];
     $.each(ids, function(i,id){
       var children = matchedNodes.last().children;
       var matched = $.grep(children, function(node){ return cleanId(node) == id })[0];
