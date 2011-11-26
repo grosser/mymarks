@@ -95,25 +95,34 @@ MM.page = function($base){
   }
 
   function onBackClick(){
-    if(self.breadcrumb.length == 0){
+    if(self.breadcrumb.length == 1){
       $.mobile.changePage('#index'); // logout
     } else {
-      displayBookmarks(self.breadcrumb.pop());
+      self.breadcrumb.pop();
+      displayBookmarks(self.breadcrumb.last());
     }
     return false;
   }
 
   function updateBackButtonText(){
-    if(self.breadcrumb.length == 0){
+    if(self.breadcrumb.length == 1){
       var text = 'Logout'
     } else {
-      var text = self.breadcrumb.last().text;
+      var text = self.breadcrumb[self.breadcrumb.length-2].text;
     }
     back.find('.ui-btn-text').text(text);
   }
 
+  // [All, x, y] -> #bookmarks-x-y
   function updateUrl(){
-    
+    console.log(self.breadcrumb.slice(1))
+    var ids = $.map(self.breadcrumb.slice(1), cleanId);
+    ids.unshift("bookmarks");
+    window.location.hash = "#" + ids.join('-');
+  }
+
+  function cleanId(node){
+    return node.id.match(/\d+/)[0]
   }
 
   redirectToHomeOnEmptyBookmarks();
