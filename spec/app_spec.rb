@@ -15,6 +15,6 @@ describe 'App' do
   it "gets /bookmarks" do
     MyMarks::Parser.should_receive(:get_html).with('X','Y').and_return 'XXX'
     get '/bookmarks?username=X&password=Y'
-    last_response.body.should == 'XXX'
+    last_response.body.should == '"XXX"'
   end
 end
