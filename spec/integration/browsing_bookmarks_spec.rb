@@ -1,10 +1,16 @@
 require 'spec_helper'
 
 describe "browsing bookmarks", :js => true do
+  # general helpers
   def click_css(css)
     page.find(css).click
   end
 
+  def current_path_info
+    current_url.sub(%r{.*?://},'')[%r{[/\?\#].*}] || '/'
+  end
+
+  # for this test
   def login
     visit "/"
     page.should have_content('MyMarks')
@@ -31,58 +37,66 @@ describe "browsing bookmarks", :js => true do
 
   before do
     MyMarks::Parser.stub!(:get_html).and_return File.read('spec/fixtures/bookmarks.txt')
-    login
   end
 
-  it "loads my bookmarks" do
-    assert_content 'Google'
-    assert_content 'F1'
-    page.should_not have_content 'Firefox' # 'place:' bookmark that should be hidden
-    page.should_not have_content 'F2' # nested folder
+  context "when logged in" do
+    before do
+      login
+    end
+
+    it "loads my bookmarks" do
+      assert_content 'Google'
+      assert_content 'F1'
+      page.should_not have_content 'Firefox' # 'place:' bookmark that should be hidden
+      page.should_not have_content 'F2' # nested folder
+    end
+
+    it "allows me to click into a folders" do
+      click_first_folder
+      assert_content 'Yahoo' # entry in F1
+      assert_back_button_is 'All'
+      page.should_not have_content 'Google'
+    end
+
+    it "allows me to click out of a folders" do
+      click_first_folder
+      assert_content 'Yahoo' # entry in F1
+      assert_back_button_is 'All'
+
+      click_back
+      assert_content 'Google' # entry in All
+      assert_back_button_is 'Logout'
+    end
+
+    it "allows me to click out of a nested folders" do
+      click_first_folder
+      assert_content 'Yahoo' # entry in F1
+      assert_back_button_is 'All'
+
+      click_first_folder
+      assert_content 'Bing' # entry in F2
+      assert_back_button_is 'F1'
+
+      click_back
+      assert_content 'Yahoo' # entry in F1
+      assert_back_button_is 'All'
+    end
+
+    it "logs me out when hitting back-button too often" do
+      click_first_folder
+      assert_content 'Yahoo' # entry in F1
+      assert_back_button_is 'All'
+
+      click_back
+      assert_back_button_is 'Logout'
+
+      click_back
+      assert_content 'password'
+    end
   end
 
-  it "allows me to click into a folders" do
-    click_first_folder
-    assert_content 'Yahoo' # entry in F1
-    assert_back_button_is 'All'
-    page.should_not have_content 'Google'
+  it "goes home when my bookmarks are not loaded" do
+    visit "/#bookmarks"
+    current_path_info.should == '/'
   end
-
-  it "allows me to click out of a folders" do
-    click_first_folder
-    assert_content 'Yahoo' # entry in F1
-    assert_back_button_is 'All'
-    
-    click_back
-    assert_content 'Google' # entry in All
-    assert_back_button_is 'Logout'
-  end
-
-  it "allows me to click out of a nested folders" do
-    click_first_folder
-    assert_content 'Yahoo' # entry in F1
-    assert_back_button_is 'All'
-
-    click_first_folder
-    assert_content 'Bing' # entry in F2
-    assert_back_button_is 'F1'
-
-    click_back
-    assert_content 'Yahoo' # entry in F1
-    assert_back_button_is 'All'
-  end
-
-  it "logs me out when hitting back-button too often" do
-    click_first_folder
-    assert_content 'Yahoo' # entry in F1
-    assert_back_button_is 'All'
-
-    click_back
-    assert_back_button_is 'Logout'
-
-    click_back
-    assert_content 'password'
-  end
-
-  it "goes home when my bookmarks are not loaded"
 end

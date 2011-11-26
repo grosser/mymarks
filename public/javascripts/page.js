@@ -135,11 +135,11 @@ MM.page = function($base){
       }
     }
 
-    back.find('.ui-btn-text').text(text)
+    back.find('.ui-btn-text').text(text);
   }
 
-  redirectToHomeOnEmptyBookmarks()
+  redirectToHomeOnEmptyBookmarks();
 
-  $base.find('#login').submit(login)
-  back.click(onBackClick)
+  $base.find('#login').submit(login);
+  back.click(onBackClick);
 }
