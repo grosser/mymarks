@@ -91,7 +91,7 @@ describe "browsing bookmarks", :js => true do
       assert_back_button_is 'Logout'
 
       click_back
-      assert_content 'password'
+      assert_content 'My Bookmarks'
     end
   end
 
