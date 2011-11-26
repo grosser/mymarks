@@ -10,6 +10,10 @@ describe "browsing bookmarks", :js => true do
     current_url.sub(%r{.*?://},'')[%r{[/\?\#].*}] || '/'
   end
 
+  def alert_window
+    page.driver.browser.switch_to.alert.text
+  end
+
   # for this test
   def login
     visit "/"
@@ -114,6 +118,16 @@ describe "browsing bookmarks", :js => true do
 
   it "goes home when my bookmarks are not loaded" do
     visit "/#bookmarks"
+    current_path_info.should == '/'
+  end
+
+  it "shows an error when my bookmarks could not be loaded" do
+    MyMarks::Parser.stub!(:get_html).and_return nil
+    visit '/'
+    fill_in 'username', :with => 'mymarks_test'
+    fill_in 'password', :with => 'mymarks_test'
+    click_css '#login input[type=submit]'
+    wait_until{ alert_window.include?("Error") }
     current_path_info.should == '/'
   end
 end
