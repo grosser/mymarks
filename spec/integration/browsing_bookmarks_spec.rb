@@ -13,19 +13,64 @@ describe "browsing bookmarks", :js => true do
     click_css '#login input[type=submit]'
   end
 
+  def assert_back_button_is(text)
+    wait_until{ page.find('#back_button').has_content? text }
+  end
+
+  def assert_content(text)
+    wait_until{ page.has_content? text }
+  end
+
+  def click_first_folder
+    click_css "a[href='']"
+  end
+
+  def click_back
+    click_css "#back_button"
+  end
+
   before do
     MyMarks::Parser.stub!(:get_html).and_return File.read('spec/fixtures/bookmarks.txt')
     login
   end
 
   it "loads my bookmarks" do
-    wait_until{ page.has_content? 'Google' } # entry
-    wait_until{ page.has_content? 'F1' } # folder
-    page.should_not have_content 'Firefox' # 'place:' bookmark that should be hidden
+    assert_content 'Google'
+    assert_content 'F1'
+    page.should_not.have_content 'Firefox' # 'place:' bookmark that should be hidden
+    page.should_not.have_content 'F2' # nested folder
   end
 
-  it "allows me to click into folders" do
-    click_css "a[data-type=folder]"
-    wait_until{ page.has_content? 'Yahoo' } # entry in F1
+  it "allows me to click into a folders" do
+    click_first_folder
+    assert_content 'Yahoo' # entry in F1
+    assert_back_button_is 'All'
+    page.should_not.have_content 'Google'
   end
+
+  it "allows me to click out of a folders" do
+    click_first_folder
+    assert_content 'Yahoo' # entry in F1
+    assert_back_button_is 'All'
+    
+    click_back
+    assert_content 'Google' # entry in All
+    assert_back_button_is 'Logout'
+  end
+
+  it "allows me to click out of a nested folders" do
+    click_first_folder
+    assert_content 'Yahoo' # entry in F1
+    assert_back_button_is 'All'
+
+    click_first_folder
+    assert_content 'Bing' # entry in F2
+    assert_back_button_is 'F1'
+
+    click_back
+    assert_content 'Yahoo' # entry in F1
+    assert_back_button_is 'All'
+  end
+
+  it "goes home when my bookmarks are not loaded"
 end

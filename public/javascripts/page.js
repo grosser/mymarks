@@ -1,17 +1,19 @@
 MM = {}
 MM.page = function($base){
-  this.bookmarks = {}
-  var back = $base.find('#back_button')
+  this.bookmarks = {};
+  this.breadcrumb = [];
+  var back = $base.find('#back_button');
+  var self = this;
 
   function login(){
     var url = '/bookmarks?' + $(this).serialize();
     $.get(url).success(function(data){
       parseBookmarks(data)
       $.mobile.changePage('#bookmarks');
-      displayBookmarks(MM.bookmarks);
+      displayBookmarks(self.bookmarks);
     }).error(function(){
-        alert("Error downloading bookmarks. Username/password wrong?")
-      });
+      alert("Error downloading bookmarks. Username/password wrong?")
+    });
     return false;
   }
 
@@ -24,7 +26,7 @@ MM.page = function($base){
   function parseBookmarks(data){
     var Foxmarks = {BookmarkManager: {}}
     eval(eval(data));
-    MM.bookmarks = Foxmarks.BookmarkManager.bookmarks;
+    self.bookmarks = Foxmarks.BookmarkManager.bookmarks;
   }
 
   function displayableBookmarks(bookmarks){
@@ -38,48 +40,34 @@ MM.page = function($base){
     $list.empty();
     var bookmarks = displayableBookmarks(bookmarks)
     $.each(bookmarks, function(i,node){
-      var li = $('<li>')
-      li.append(buildBookmark(node))
-      $list.append(li)
+      var li = $('<li>');
+      li.append(buildBookmark(node));
+      $list.append(li);
       $list.listview("refresh");
     })
   }
 
   function buildBookmark(node){
-    var a = $('<a>')
-    a.text(node.text)
-    a.attr('data-transition', 'slide')
-    a.attr('data-type', node.leaf ? 'link' : 'folder')
-    a[0].mm_node = node
-
-    if(node.leaf){
-      // simple link
-      a.attr('href', node.href)
-    } else {
-      // folder
-      a.click(function(){
-        displayBookmarks(node.children)
-        return false;
-      })
-    }
-
-    a.click(onBookmarkClick)
-    image = buildImage(node)
-    a.prepend(image)
-
+    var a = $('<a>');
+    a.text(node.text);
+    a.attr('data-transition', 'slide');
+    a[0].mm_node = node;
+    a.attr('href', node.href);
+    a.click(onBookmarkClick);
+    a.prepend(buildImage(node));
     return a;
   }
 
   // build link or folder icon
   function buildImage(node){
-    var $image = $('<img>')
+    var $image = $('<img>');
     if(node.leaf){
-      $image.attr('src', '/images/document.png')
-      preloadFavicon($image, node.href)
+      $image.attr('src', '/images/document.png');
+      preloadFavicon($image, node.href);
     } else {
-      $image.attr('src', '/images/folder.png')
+      $image.attr('src', '/images/folder.png');
     }
-    return $image
+    return $image;
   }
 
   // create a preloaded image, that replaces the other when loaded
@@ -92,16 +80,42 @@ MM.page = function($base){
   }
 
   function onBookmarkClick(){
-    var $a = $(this)
-    if($a.attr('data-type') == 'folder'){
-      back.find('.ui-btn-text').text($a.text())
-      back[0].mm_node = this.mm_node
-    }
+    var node = this.mm_node;
+    var $a = $(this);
+    if(node.leaf) return; // normal link
+
+    displayBookmarks(node.children)
+
+    // set back button to parent name
+    console.log(nodeByBreadcrumb(self.breadcrumb))
+    var parent = nodeByBreadcrumb(self.breadcrumb) || {text: 'All'};
+    back.find('.ui-btn-text').text(parent.text)
+
+    // keep track of breadcrumb
+    self.breadcrumb.push(node.id)
+
+    return false;
   }
 
   function onBackClick(){
-    console.log(this.mm_node)
-    displayBookmarks(this.mm_node)
+    // find the current folder by going through the bookmarks
+    // via the node-ids in the breadcrumb
+    self.breadcrumb.pop();
+    var node = nodeByBreadcrumb(self.breadcrumb);
+    displayBookmarks(node ? node.children : self.bookmarks);
+    return false;
+  }
+
+  function nodeByBreadcrumb(breadcrumb){
+    if(breadcrumb.length == 0) return;
+
+    var nodes = self.bookmarks;
+    $.each(breadcrumb, function(i,id){
+      nodes = $.grep(nodes, function(node){
+        return node.id == id;
+      })[0];
+    });
+    return nodes;
   }
 
   redirectToHomeOnEmptyBookmarks()
