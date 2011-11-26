@@ -11,7 +11,6 @@ MM.page = function($base){
       self.root = parseBookmarks(data);
       self.breadcrumb = [self.root];
       $.mobile.changePage('#bookmarks');
-      displayBookmarks(self.root);
     }).error(function(){
       alert("Error downloading bookmarks. Username/password wrong?")
     });
@@ -38,7 +37,6 @@ MM.page = function($base){
 
   function displayBookmarks(node){
     updateBackButtonText();
-    updateUrl();
 
     var $list = $('#bookmark_list');
     $list.empty();
@@ -89,7 +87,7 @@ MM.page = function($base){
     if(node.leaf) return; // normal link
 
     self.breadcrumb.push(node)
-    displayBookmarks(node)
+    updateHash();
 
     return false;
   }
@@ -99,7 +97,7 @@ MM.page = function($base){
       $.mobile.changePage('#index'); // logout
     } else {
       self.breadcrumb.pop();
-      displayBookmarks(self.breadcrumb.last());
+      updateHash();
     }
     return false;
   }
@@ -114,11 +112,28 @@ MM.page = function($base){
   }
 
   // [All, x, y] -> #bookmarks-x-y
-  function updateUrl(){
-    console.log(self.breadcrumb.slice(1))
+  function updateHash(){
     var ids = $.map(self.breadcrumb.slice(1), cleanId);
     ids.unshift("bookmarks");
     window.location.hash = "#" + ids.join('-');
+  }
+
+  function hashChanged(){
+    if(!self.root) return;
+    var ids = window.location.hash.split('-');
+    if(ids.shift() != '#bookmarks') return;
+    self.breadcrumb = matchedNodesByIds(ids);
+    displayBookmarks(self.breadcrumb.last());
+  }
+
+  function matchedNodesByIds(ids){
+    var matchedNodes = [self.root];
+    $.each(ids, function(i,id){
+      var children = matchedNodes.last().children;
+      var matched = $.grep(children, function(node){ return cleanId(node) == id })[0];
+      matchedNodes.push(matched);
+    });
+    return matchedNodes;
   }
 
   function cleanId(node){
@@ -127,6 +142,7 @@ MM.page = function($base){
 
   redirectToHomeOnEmptyBookmarks();
 
+  $(window).hashchange(hashChanged);
   $base.find('#login').submit(login);
   back.click(onBackClick);
 }
