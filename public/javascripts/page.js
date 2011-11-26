@@ -63,28 +63,30 @@ MM.page = function($base){
     a.attr('href', node.href);
     a.addClass(node.leaf ? 'leaf' : 'folder');
     a.click(onBookmarkClick);
-    a.prepend(buildImage(node));
+    addFavicon(a, node);
     return a;
   }
 
   // build link or folder icon
-  function buildImage(node){
-    var $image = $('<img>');
+  function addFavicon($el, node){
     if(node.leaf){
-      $image.attr('src', '/images/document.png');
-      preloadFavicon($image, node.href);
+      var src = '/images/document.png';
+      preloadFavicon(node.href, function(src){
+        $el.css('background-image', 'url('+src+')');
+      });
     } else {
-      $image.attr('src', '/images/folder.png');
+      var src = '/images/folder.png';
     }
-    return $image;
+    $el.css('background-image', 'url('+src+')');
+    console.log($el)
   }
 
   // create a preloaded image, that replaces the other when loaded
-  function preloadFavicon($image, url){
+  function preloadFavicon(url, callback){
     var favicon = $.url(url).attr('base') + '/favicon.ico'
     var pre_loader = $('<img>').attr('src', favicon)
     pre_loader.load(function(){
-      $image.attr('src', favicon)
+      callback(favicon);
     })
   }
 
