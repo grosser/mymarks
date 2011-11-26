@@ -5,6 +5,8 @@ It uses sinatra and jquery mobile and is tested via rspec + capybara + selenium.
 
 Passwords are not stored, just simply passed to XMarks to ge the bookmarks.
 
+## [Go Play](http://mymarks.heroku.com)
+
 Development
 ===========
 
