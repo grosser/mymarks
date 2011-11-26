@@ -21,12 +21,16 @@
     }
   </style>
 
-  <script>var AIRBRAKE_API_KEY = 'c762ddb25375fefc98d38f88b914659a';</script>
-  <script src="/javascripts/airbrake.js"></script>
+  <% if ENV['RACK_ENV'] == 'production' %>
+    <script>var AIRBRAKE_API_KEY = 'c762ddb25375fefc98d38f88b914659a';</script>
+    <script src="/javascripts/airbrake.js"></script>
+  <% end %>
+
   <script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
   <script src="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.js"></script>
   <script src="/javascripts/jquery.url.js"></script>
   <script src="/javascripts/extensions.js"></script>
+
   <script src="/javascripts/page.js"></script>
   <script>
     $(function(){
