@@ -93,6 +93,13 @@ describe "browsing bookmarks", :js => true do
       click_back
       assert_content 'My Bookmarks'
     end
+
+    it "shows breadcrumb in url, so I can use my browser back button" do
+      click_first_folder
+      current_path_info.should == '/#bookmarks-F1'
+      click_back
+      current_path_info.should == '/#bookmarks'
+    end
   end
 
   it "goes home when my bookmarks are not loaded" do

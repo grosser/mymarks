@@ -1,6 +1,6 @@
 MM = {}
 MM.page = function($base){
-  this.bookmarks = {};
+  this.root = false;
   this.breadcrumb = [];
   var back = $base.find('#back_button');
   var self = this;
@@ -8,9 +8,10 @@ MM.page = function($base){
   function login(){
     var url = '/bookmarks?' + $(this).serialize();
     $.get(url).success(function(data){
-      parseBookmarks(data)
+      self.root = parseBookmarks(data);
+      self.breadcrumb = [self.root];
       $.mobile.changePage('#bookmarks');
-      displayBookmarks(self.bookmarks);
+      displayBookmarks(self.root);
     }).error(function(){
       alert("Error downloading bookmarks. Username/password wrong?")
     });
@@ -18,7 +19,7 @@ MM.page = function($base){
   }
 
   function redirectToHomeOnEmptyBookmarks(){
-    if(!this.bookmarks){
+    if(!this.root){
       $.mobile.changePage('#index');
     }
   }
@@ -26,25 +27,28 @@ MM.page = function($base){
   function parseBookmarks(data){
     var Foxmarks = {BookmarkManager: {}}
     eval(eval(data));
-    self.bookmarks = Foxmarks.BookmarkManager.bookmarks;
+    return {text: 'All', children: Foxmarks.BookmarkManager.bookmarks};
   }
 
-  function displayableBookmarks(bookmarks){
-    return $.grep(bookmarks, function(e){
+  function displayableChildren(node){
+    return $.grep(node.children, function(e){
       return !(e.href || '').match(/^place:/)
     })
   }
 
-  function displayBookmarks(bookmarks){
+  function displayBookmarks(node){
+    updateBackButtonText();
+    updateUrl();
+
     var $list = $('#bookmark_list');
     $list.empty();
-    var bookmarks = displayableBookmarks(bookmarks)
-    $.each(bookmarks, function(i,node){
+    var bookmarks = displayableChildren(node);
+    $.each(bookmarks, function(i,child){
       var li = $('<li>');
-      li.append(buildBookmark(node));
+      li.append(buildBookmark(child));
       $list.append(li);
-      $list.listview("refresh");
-    })
+    });
+    $list.listview("refresh"); // hangs when page is not already at #bookmarks
   }
 
   function buildBookmark(node){
@@ -82,60 +86,34 @@ MM.page = function($base){
 
   function onBookmarkClick(){
     var node = this.mm_node;
-    var $a = $(this);
     if(node.leaf) return; // normal link
 
-    displayBookmarks(node.children)
-
-    // keep track of breadcrumb
-    self.breadcrumb.push(node.id)
-    updateBackButtonText();
+    self.breadcrumb.push(node)
+    displayBookmarks(node)
 
     return false;
   }
 
   function onBackClick(){
     if(self.breadcrumb.length == 0){
-      // logout
-      $.mobile.changePage('#index');
+      $.mobile.changePage('#index'); // logout
     } else {
-      // find the current folder by going through the bookmarks
-      // via the node-ids in the breadcrumb
-      self.breadcrumb.pop();
-      var node = nodeByBreadcrumb(self.breadcrumb);
-      displayBookmarks(node ? node.children : self.bookmarks);
-      updateBackButtonText();
+      displayBookmarks(self.breadcrumb.pop());
     }
     return false;
   }
 
-  function nodeByBreadcrumb(breadcrumb){
-    if(breadcrumb.length == 0) return;
-
-    var nodes = self.bookmarks;
-    $.each(breadcrumb, function(i,id){
-      nodes = $.grep(nodes, function(node){
-        return node.id == id;
-      })[0];
-    });
-    return nodes;
+  function updateBackButtonText(){
+    if(self.breadcrumb.length == 0){
+      var text = 'Logout'
+    } else {
+      var text = self.breadcrumb.last().text;
+    }
+    back.find('.ui-btn-text').text(text);
   }
 
-  function updateBackButtonText(){
-    var text;
-    if(self.breadcrumb.length == 0){
-      text = 'Logout'
-    } else {
-      var breadcrumb_to_parent = self.breadcrumb.slice(0,-1)
-      var parent_node = nodeByBreadcrumb(breadcrumb_to_parent);
-      if(parent_node){
-        text = parent_node.text;
-      } else {
-        text = 'All'
-      }
-    }
-
-    back.find('.ui-btn-text').text(text);
+  function updateUrl(){
+    
   }
 
   redirectToHomeOnEmptyBookmarks();
