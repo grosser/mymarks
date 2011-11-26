@@ -53,6 +53,7 @@ MM.page = function($base){
     a.attr('data-transition', 'slide');
     a[0].mm_node = node;
     a.attr('href', node.href);
+    a.addClass(node.leaf ? 'leaf' : 'folder');
     a.click(onBookmarkClick);
     a.prepend(buildImage(node));
     return a;
@@ -86,23 +87,25 @@ MM.page = function($base){
 
     displayBookmarks(node.children)
 
-    // set back button to parent name
-    console.log(nodeByBreadcrumb(self.breadcrumb))
-    var parent = nodeByBreadcrumb(self.breadcrumb) || {text: 'All'};
-    back.find('.ui-btn-text').text(parent.text)
-
     // keep track of breadcrumb
     self.breadcrumb.push(node.id)
+    updateBackButtonText();
 
     return false;
   }
 
   function onBackClick(){
-    // find the current folder by going through the bookmarks
-    // via the node-ids in the breadcrumb
-    self.breadcrumb.pop();
-    var node = nodeByBreadcrumb(self.breadcrumb);
-    displayBookmarks(node ? node.children : self.bookmarks);
+    if(self.breadcrumb.length == 0){
+      // logout
+      $.mobile.changePage('#index');
+    } else {
+      // find the current folder by going through the bookmarks
+      // via the node-ids in the breadcrumb
+      self.breadcrumb.pop();
+      var node = nodeByBreadcrumb(self.breadcrumb);
+      displayBookmarks(node ? node.children : self.bookmarks);
+      updateBackButtonText();
+    }
     return false;
   }
 
@@ -116,6 +119,23 @@ MM.page = function($base){
       })[0];
     });
     return nodes;
+  }
+
+  function updateBackButtonText(){
+    var text;
+    if(self.breadcrumb.length == 0){
+      text = 'Logout'
+    } else {
+      var breadcrumb_to_parent = self.breadcrumb.slice(0,-1)
+      var parent_node = nodeByBreadcrumb(breadcrumb_to_parent);
+      if(parent_node){
+        text = parent_node.text;
+      } else {
+        text = 'All'
+      }
+    }
+
+    back.find('.ui-btn-text').text(text)
   }
 
   redirectToHomeOnEmptyBookmarks()

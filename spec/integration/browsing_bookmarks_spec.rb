@@ -14,15 +14,15 @@ describe "browsing bookmarks", :js => true do
   end
 
   def assert_back_button_is(text)
-    wait_until{ page.find('#back_button').has_content? text }
+    wait_until(1){ page.find('#back_button').has_content? text }
   end
 
   def assert_content(text)
-    wait_until{ page.has_content? text }
+    wait_until(1){ page.find('.ui-page-active').has_content? text }
   end
 
   def click_first_folder
-    click_css "a[href='']"
+    click_css "a.folder"
   end
 
   def click_back
@@ -37,15 +37,15 @@ describe "browsing bookmarks", :js => true do
   it "loads my bookmarks" do
     assert_content 'Google'
     assert_content 'F1'
-    page.should_not.have_content 'Firefox' # 'place:' bookmark that should be hidden
-    page.should_not.have_content 'F2' # nested folder
+    page.should_not have_content 'Firefox' # 'place:' bookmark that should be hidden
+    page.should_not have_content 'F2' # nested folder
   end
 
   it "allows me to click into a folders" do
     click_first_folder
     assert_content 'Yahoo' # entry in F1
     assert_back_button_is 'All'
-    page.should_not.have_content 'Google'
+    page.should_not have_content 'Google'
   end
 
   it "allows me to click out of a folders" do
@@ -70,6 +70,18 @@ describe "browsing bookmarks", :js => true do
     click_back
     assert_content 'Yahoo' # entry in F1
     assert_back_button_is 'All'
+  end
+
+  it "logs me out when hitting back-button too often" do
+    click_first_folder
+    assert_content 'Yahoo' # entry in F1
+    assert_back_button_is 'All'
+
+    click_back
+    assert_back_button_is 'Logout'
+
+    click_back
+    assert_content 'password'
   end
 
   it "goes home when my bookmarks are not loaded"
