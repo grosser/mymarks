@@ -26,12 +26,13 @@
     <script src="/javascripts/airbrake.js"></script>
   <% end %>
 
-  <script src="http://code.jquery.com/jquery-1.6.4.min.js"></script>
-  <script src="http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.js"></script>
-  <script src="/javascripts/jquery.url.js"></script>
-  <script src="/javascripts/extensions.js"></script>
+  <script src="http://api.assets.io/b7/"></script>
+  <script>
+    assets.account('d2lgz8i82xgo1b');
+    assets.live('http://mymarks.heroku.com');
+    assets.js('http://code.jquery.com/jquery-1.6.4.min.js http://code.jquery.com/mobile/1.0/jquery.mobile-1.0.min.js /javascripts/jquery.url.js /javascripts/extensions.js /javascripts/page.js');
+  </script>
 
-  <script src="/javascripts/page.js"></script>
   <script>
     $(function(){
       new MM.page($('body'));
