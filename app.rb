@@ -4,6 +4,8 @@ require 'error_logger'
 set :views, 'views'
 set :public_folder, 'public' # shotgun serves them automatically but rackup does not ...
 
+use Rack::SSL if production?
+
 CACHE = {}
 
 get "/bookmarks" do
