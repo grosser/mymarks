@@ -4,7 +4,7 @@ gem 'sinatra'
 gem 'mechanize', '2.1.pre.1'
 gem 'json'
 gem 'rake'
-gem 'rack-ssl'
+gem 'rack-ssl', :require => 'rack/ssl'
 
 group :development do
   gem 'shotgun'
