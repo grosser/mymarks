@@ -16,7 +16,6 @@ describe "browsing bookmarks", :js => true do
     }.should raise_error(Selenium::WebDriver::Error::UnhandledAlertError)
   end
 
-
   # for this test
   def login
     visit "/"
@@ -89,6 +88,15 @@ describe "browsing bookmarks", :js => true do
       assert_back_button_is 'All'
     end
 
+    it "logs me out when hitting Logout" do
+      assert_back_button_is 'Logout'
+      click_back
+      assert_content 'Load My Bookmarks'
+
+      visit "#bookmarks"
+      current_path_info.should == "/"
+    end
+
     it "logs me out when hitting back-button too often" do
       click_first_folder
       assert_content 'Yahoo' # entry in F1
@@ -98,7 +106,7 @@ describe "browsing bookmarks", :js => true do
       assert_back_button_is 'Logout'
 
       click_back
-      assert_content 'My Bookmarks'
+      assert_content 'Load My Bookmarks'
     end
 
     it "shows breadcrumb in url, so I can use my browser back button" do

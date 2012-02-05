@@ -25,7 +25,6 @@ TODO
  - filter parameter logging (password)
  - favicons from non-https urls make browsers unhappy <-> fallback to http after login or try both or proxy
  - make MyMarks link to the homepage
- - forget bookmarks when I click logout
 
 Authors
 =======

@@ -5,7 +5,7 @@ MM.page = function($base){
   var back = $base.find('#back_button');
 
   function initialize(){
-    redirectToHomeOnEmptyBookmarks();
+    reset();
     $(window).hashchange(hashChanged);
     $base.find('#login').submit(login);
     back.click(onBackClick);
@@ -26,12 +26,6 @@ MM.page = function($base){
         $.mobile.hidePageLoadingMsg();
       });
     return false;
-  }
-
-  function redirectToHomeOnEmptyBookmarks(){
-    if(!this.root){
-      $.mobile.changePage('#index');
-    }
   }
 
   function parseBookmarks(data){
@@ -106,7 +100,7 @@ MM.page = function($base){
 
   function onBackClick(){
     if(breadcrumb.length == 1){
-      $.mobile.changePage('#index'); // logout
+      reset(); // logout
     } else {
       breadcrumb.pop();
       updateHash();
@@ -131,7 +125,9 @@ MM.page = function($base){
   }
 
   function hashChanged(){
-    if(!root) return;
+    if(!root) {
+      return reset(); // no data .. login first
+    }
     var ids = window.location.hash.split('-');
     if(ids.shift() != '#bookmarks') return;
     breadcrumb = matchedNodesByIds(ids);
@@ -150,6 +146,15 @@ MM.page = function($base){
 
   function cleanId(node){
     return node.id.replace(/[^a-z\d+]/g,'');
+  }
+
+  function reset(){
+    root = false;
+    // do not let users see stale data
+    $('#bookmark_list').html('<li>Waiting...</li>');
+    setTimeout(function(){
+      $.mobile.changePage('#index');
+    },0);
   }
 
   initialize();
