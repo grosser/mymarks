@@ -1,8 +1,10 @@
 require 'environment'
-require 'error_logger'
 
 set :views, 'views'
 set :public_folder, 'public' # shotgun serves them automatically but rackup does not ...
+set :logging, true
+set :dump_errors, true
+set :raise_errors, true
 
 use Rack::SSL if production?
 
