@@ -19,6 +19,9 @@
       float: right;
       margin-right: 0.5em;
     }
+    #footer{
+      text-align: center;
+    }
   </style>
 
   <% if ENV['RACK_ENV'] == 'production' %>
@@ -49,6 +52,9 @@
       <input type="password" name="password" placeholder="XMarks password"/>
       <input type="submit" value="Load My Bookmarks"/>
     </form>
+  </div>
+  <div data-role="footer" id="footer">
+    <a href="https://github.com/grosser/mymarks" data-role="button" data-icon="gear">Feedback / Fork -- GitHub</a>
   </div>
 </div>
 

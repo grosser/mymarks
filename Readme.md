@@ -21,10 +21,8 @@ Test: `bundle exec rake`
 
 TODO
 ====
- - github link fork me
  - filter parameter logging (password)
  - favicons from non-https urls make browsers unhappy <-> fallback to http after login or try both or proxy
- - make MyMarks link to the homepage
 
 Authors
 =======
