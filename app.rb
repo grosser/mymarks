@@ -12,7 +12,7 @@ error do
 end
 
 set :views, 'views'
-set :public, 'public' # shotgun serves them but rackup does not ...
+set :public_folder, 'public' # shotgun serves them automatically but rackup does not ...
 
 CACHE = {}
 
