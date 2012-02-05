@@ -19,6 +19,11 @@ Development
 
 Test: `bundle exec rake`
 
+TODO
+====
+ - force ssl in production
+ - make MyMarks link to the homepage
+ - forget bookmarks when I click logout
 
 Authors
 =======
