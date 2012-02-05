@@ -53,6 +53,7 @@ GEM
     unf (0.0.3)
       unf_ext
     unf_ext (0.0.3)
+    vendorer (0.1.9)
     webrobots (0.0.12)
       nokogiri (>= 1.4.4)
     xpath (0.1.4)
@@ -70,3 +71,4 @@ DEPENDENCIES
   rspec
   shotgun
   sinatra
+  vendorer

@@ -10,4 +10,5 @@ group :development do
   gem 'rack-test'
   gem 'rspec'
   gem 'capybara'
+  gem 'vendorer'
 end

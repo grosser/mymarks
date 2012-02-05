@@ -1,0 +1,5 @@
+folder 'public/javascripts/vendor' do
+  file 'jquery.url.js', 'https://raw.github.com/allmarkedup/jQuery-URL-Parser/master/jquery.url.js'
+  file 'jquery.hashchange.js', 'https://raw.github.com/cowboy/jquery-hashchange/v1.3/jquery.ba-hashchange.min.js'
+  file 'airbrake.js', 'https://raw.github.com/protonet/simple-javascript-airbrake-notifier/master/notifier.min.js'
+end
