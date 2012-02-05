@@ -10,9 +10,12 @@ describe "browsing bookmarks", :js => true do
     current_url.sub(%r{.*?://},'')[%r{[/\?\#].*}] || '/'
   end
 
-  def alert_window
-    page.driver.browser.switch_to.alert.text
+  def alert_should_be_open
+    lambda {
+      current_path_info # read: any interaction
+    }.should raise_error(Selenium::WebDriver::Error::UnhandledAlertError)
   end
+
 
   # for this test
   def login
@@ -127,7 +130,6 @@ describe "browsing bookmarks", :js => true do
     fill_in 'username', :with => 'mymarks_test'
     fill_in 'password', :with => 'mymarks_test'
     click_css '#login input[type=submit]'
-    wait_until{ alert_window.include?("Error") }
-    current_path_info.should == '/'
+    alert_should_be_open
   end
 end
