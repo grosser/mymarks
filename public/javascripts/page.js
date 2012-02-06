@@ -12,9 +12,9 @@ MM.page = function($base){
   }
 
   function login(){
-    var url = '/bookmarks?' + $(this).serialize();
+    var url = '/bookmarks';
     $.mobile.showPageLoadingMsg();
-    $.ajax({url: url, timeout: 10000})
+    $.ajax({url: url, timeout: 10000, type: 'POST', data: $(this).serialize()})
       .success(function(data){
         root = parseBookmarks(data);
         breadcrumb = [root];

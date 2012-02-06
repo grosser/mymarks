@@ -10,7 +10,7 @@ use Rack::SSL if production?
 
 CACHE = {}
 
-get "/bookmarks" do
+post "/bookmarks" do
   key = [params[:username], params[:password]]
   @bookmarks = CACHE[key] ||= MyMarks::Parser.get_html(params[:username], params[:password])
   if @bookmarks
