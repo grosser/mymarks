@@ -10,10 +10,8 @@ describe "browsing bookmarks", :js => true do
     current_url.sub(%r{.*?://},'')[%r{[/\?\#].*}] || '/'
   end
 
-  def alert_should_be_open
-    lambda {
-      current_path_info # read: any interaction
-    }.should raise_error(Selenium::WebDriver::Error::UnhandledAlertError)
+  def alert
+    page.driver.browser.switch_to.alert.text
   end
 
   # for this test
@@ -39,6 +37,10 @@ describe "browsing bookmarks", :js => true do
 
   def click_back
     click_css "#back_button"
+  end
+
+  def execute_javascript(code)
+    page.driver.execute_script(code)
   end
 
   before do
@@ -132,12 +134,23 @@ describe "browsing bookmarks", :js => true do
     current_path_info.should == '/'
   end
 
-  it "shows an error when my bookmarks could not be loaded" do
-    MyMarks::Parser.stub!(:get_html).and_return nil
-    visit '/'
-    fill_in 'username', :with => 'mymarks_test'
-    fill_in 'password', :with => 'mymarks_test'
-    click_css '#login input[type=submit]'
-    alert_should_be_open
+  context "errors" do
+    it "shows an error when my bookmarks could not be loaded" do
+      MyMarks::Parser.stub!(:get_html).and_return nil
+      visit '/'
+      fill_in 'username', :with => 'mymarks_test'
+      fill_in 'password', :with => 'mymarks_test'
+      click_css '#login input[type=submit]'
+      alert.should include "Username"
+    end
+
+    it "shows an error when my bookmarks time out" do
+      visit '/'
+      fill_in 'username', :with => 'mymarks_test'
+      fill_in 'password', :with => 'mymarks_test'
+      execute_javascript "MM.LOAD_TIMEOUT = 1"
+      click_css '#login input[type=submit]'
+      alert.should include "Timeout"
+    end
   end
 end

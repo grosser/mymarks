@@ -1,4 +1,5 @@
 MM = {}
+MM.LOAD_TIMEOUT = 10000
 MM.page = function($base){
   var root = false;
   var breadcrumb = [];
@@ -14,15 +15,19 @@ MM.page = function($base){
   function login(){
     var url = '/bookmarks';
     $.mobile.showPageLoadingMsg();
-    $.ajax({url: url, timeout: 10000, type: 'POST', data: $(this).serialize()})
+    $.ajax({url: url, timeout: MM.LOAD_TIMEOUT, type: 'POST', data: $(this).serialize()})
       .success(function(data){
         root = parseBookmarks(data);
         breadcrumb = [root];
         $.mobile.hidePageLoadingMsg();
         $.mobile.changePage('#bookmarks');
       })
-      .error(function(){
-        alert("Error downloading bookmarks. Username/password wrong?")
+      .error(function(e){
+        if(e.statusText == 'timeout'){
+          alert("Timeout -- please try again.");
+        } else {
+          alert("Error downloading bookmarks. Username/password wrong?" + MM.LOAD_TIMEOUT);
+        }
         $.mobile.hidePageLoadingMsg();
       });
     return false;
