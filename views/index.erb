@@ -22,6 +22,10 @@
     #footer{
       text-align: center;
     }
+    #premium{
+      text-align: center;
+      margin-top: 60px;
+    }
   </style>
 
   <% if ENV['RACK_ENV'] == 'production' %>
@@ -52,6 +56,9 @@
       <input type="password" name="password" placeholder="XMarks password"/>
       <input type="submit" value="Load My Bookmarks"/>
     </form>
+    <div id="premium">
+      <a href="http://buy.xmarks.com/premium.php">Premium</a>
+    </div>
   </div>
   <div data-role="footer" id="footer">
     <a href="https://github.com/grosser/mymarks" data-role="button" data-icon="gear">Feedback / Fork -- GitHub</a>
