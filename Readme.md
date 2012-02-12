@@ -22,6 +22,8 @@ Test: `bundle exec rake`
 TODO
 ====
  - favicons from non-https urls make browsers unhappy <-> fallback to http after login or try both or proxy
+ - localstore <-> no need to enter password every time (+ refresh button)
+ - Uncaught URIError: URI malformed `jquery.url.js:32`, rescue from malformatted urls
 
 Authors
 =======
