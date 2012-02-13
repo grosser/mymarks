@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe "browsing bookmarks", :js => true do
-  # general helpers
   def click_css(css)
     page.find(css).click
   end
@@ -14,7 +13,6 @@ describe "browsing bookmarks", :js => true do
     page.driver.browser.switch_to.alert.text
   end
 
-  # for this test
   def login
     visit "/"
     page.should have_content('MyMarks')
