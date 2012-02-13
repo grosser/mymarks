@@ -11,6 +11,9 @@ describe "browsing bookmarks", :js => true do
 
   def alert
     page.driver.browser.switch_to.alert.text
+  ensure
+    # alerts would stay open after tests finish
+    page.driver.browser.switch_to.alert.accept
   end
 
   def login
