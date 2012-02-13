@@ -2,6 +2,12 @@ require 'mechanize'
 
 module MyMarks
   module Parser
+    @@cache = {}
+
+    def self.cached_get_html(username, password)
+      @@cache["#{username}-#{password}"] ||= get_html(username, password)
+    end
+
     def self.get_html(username, password)
       agent = Mechanize.new
 

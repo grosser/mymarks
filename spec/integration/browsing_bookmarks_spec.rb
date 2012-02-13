@@ -42,7 +42,7 @@ describe "browsing bookmarks", :js => true do
   end
 
   before do
-    MyMarks::Parser.stub!(:get_html).and_return File.read('spec/fixtures/bookmarks.txt')
+    MyMarks::Parser.stub(:cached_get_html).and_return File.read('spec/fixtures/bookmarks.txt')
   end
 
   context "when logged in" do
@@ -134,7 +134,7 @@ describe "browsing bookmarks", :js => true do
 
   context "errors" do
     it "shows an error when my bookmarks could not be loaded" do
-      MyMarks::Parser.stub!(:get_html).and_return nil
+      MyMarks::Parser.stub(:cached_get_html).and_return nil
       visit '/'
       fill_in 'username', :with => 'mymarks_test'
       fill_in 'password', :with => 'mymarks_test'
@@ -143,6 +143,7 @@ describe "browsing bookmarks", :js => true do
     end
 
     it "shows an error when my bookmarks time out" do
+      MyMarks::Parser.stub(:cached_get_html).and_return File.read('spec/fixtures/bookmarks.txt')
       visit '/'
       fill_in 'username', :with => 'mymarks_test'
       fill_in 'password', :with => 'mymarks_test'

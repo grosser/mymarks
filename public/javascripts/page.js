@@ -26,7 +26,7 @@ MM.page = function($base){
         if(e.statusText == 'timeout'){
           alert("Timeout -- please try again.");
         } else {
-          alert("Error downloading bookmarks. Username/password wrong?" + MM.LOAD_TIMEOUT);
+          alert("Error downloading bookmarks. Username/password wrong?");
         }
         $.mobile.hidePageLoadingMsg();
       });
