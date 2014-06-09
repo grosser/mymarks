@@ -8,7 +8,7 @@ Passwords are not stored, just simply passed to XMarks to ge the bookmarks.
 ![Login screen](http://dl.dropbox.com/u/2670385/Web/mymarks1.png)
 ![Bookmarks screen](http://dl.dropbox.com/u/2670385/Web/mymarks2.png)
 
-## [Go Play](http://mymarks.heroku.com)
+## [Go Play](http://mymarks.herokuapp.com)
 
 Development
 ===========
